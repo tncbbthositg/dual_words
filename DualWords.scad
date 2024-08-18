@@ -75,5 +75,7 @@ module dual_words() {
     }
 }
 
+echo("Time: ", $t);
+
 rotate([0, 0, 45 - 90 * $t])
     dual_words();
