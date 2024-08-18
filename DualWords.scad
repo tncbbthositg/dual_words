@@ -2,14 +2,14 @@
   Some Special Characters for you!!
   ♥
   ☻
-  
+
 */
 
 /* [Word Options] */
 
-first_word = "PIPPY";
+first_word = "WORD1";
 
-second_word = "HATCH";
+second_word = "WORD2";
 
 font = "Arial:style=Bold";
 
@@ -48,25 +48,32 @@ module letter(letter, angle) {
         translate([0, 0, -extrude_length / 2])
             linear_extrude(extrude_length)
                 text(letter, height, halign = "center", font = font);
-}    
+}
 
-for (i = [0 : length - 1]) {
-    first_letter = first_word[i];
-    second_letter = second_word[i];
-    
-    translate([letter_width * i, 0, 0]) {
-        intersection() {
-            letter(first_letter, 45);
-            letter(second_letter, -45);
+module dual_words() {
+    translate([-letter_width * (length - 1) / 2, 0, 0]) {
+        for (i = [0 : length - 1]) {
+            first_letter = first_word[i];
+            second_letter = second_word[i];
+
+            translate([letter_width * i, 0, 0]) {
+                intersection() {
+                    letter(first_letter, 45);
+                    letter(second_letter, -45);
+                }
+            }
+        }
+
+        color("cyan") translate([0, 0, -(thickness - .2)]) {
+            hull() {
+                cylinder(h = thickness, r = platform_radius);
+
+                translate([letter_width * (length - 1), 0, 0])
+                    cylinder(h = thickness, r = platform_radius);
+            }
         }
     }
 }
 
-color("cyan") translate([0, 0, -(thickness - .2)]) {
-    hull() {
-        cylinder(h = thickness, r = platform_radius);
-
-        translate([letter_width * (length - 1), 0, 0])
-            cylinder(h = thickness, r = platform_radius);
-    }
-}
+rotate([0, 0, 45 - 90 * $t])
+    dual_words();
